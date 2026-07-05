@@ -5,6 +5,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 class Location extends Model {
     use HasUuids;
     protected $fillable = ['building', 'floor', 'room', 'description'];
+    protected $appends = ['full_name'];
     public function getFullNameAttribute(): string {
         return implode(' · ', array_filter([$this->building, $this->floor, $this->room]));
     }

@@ -37,10 +37,19 @@ class Asset extends Model {
 
     public function getTimelineAttribute(): array {
         $items = collect();
-        foreach ($this->userHistory as $h)     { $items->push(['type'=>'user',        'date'=>$h->start_date, 'data'=>$h]); }
+        foreach ($this->userHistory as $h)     { $items->push(['type'=>'user',        'date'=>$h->created_at, 'data'=>$h]); }
         foreach ($this->locationHistory as $h) { $items->push(['type'=>'location',    'date'=>$h->moved_at,   'data'=>$h]); }
         foreach ($this->statusLog as $h)       { $items->push(['type'=>'status',      'date'=>$h->changed_at, 'data'=>$h]); }
         foreach ($this->maintenances as $h)    { $items->push(['type'=>'maintenance', 'date'=>$h->completed_date??$h->scheduled_date, 'data'=>$h]); }
         return $items->sortByDesc('date')->values()->toArray();
+    }
+
+    public function toArray(): array
+    {
+        $array = parent::toArray();
+        if (array_key_exists('current_user', $array)) {
+            $array['currentUser'] = $array['current_user'];
+        }
+        return $array;
     }
 }
